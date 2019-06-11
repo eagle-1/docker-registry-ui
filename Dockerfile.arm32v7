@@ -1,7 +1,6 @@
-FROM arm32v7/node:lts-slim
+FROM jc21/registry-ui as original
 
-MAINTAINER Jamie Curnow <jc@jc21.com>
-LABEL maintainer="Jamie Curnow <jc@jc21.com>"
+FROM arm32v7/node:lts-slim
 
 RUN apt-get update \
     && apt-get install -y curl \
@@ -9,11 +8,11 @@ RUN apt-get update \
 
 ENV NODE_ENV=production
 
-ADD dist                /app/dist
-ADD node_modules        /app/node_modules
-ADD LICENCE             /app/LICENCE
-ADD package.json        /app/package.json
-ADD src/backend         /app/src/backend
+COPY --from=original /app/dist                /app/dist
+COPY --from=original /app/node_modules        /app/node_modules
+COPY --from=original /app/LICENCE             /app/LICENCE
+COPY --from=original /app/package.json        /app/package.json
+COPY --from=original /app/src/backend         /app/src/backend
 
 WORKDIR /app
 
